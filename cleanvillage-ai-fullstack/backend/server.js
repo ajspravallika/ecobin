@@ -20,6 +20,7 @@ const notificationRoutes = require('./src/routes/notificationRoutes');
 const historyRoutes = require('./src/routes/historyRoutes');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const simulationRoutes = require('./src/routes/simulationRoutes');
+const sensorRoutes = require('./src/routes/sensorRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -37,8 +38,8 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 }
 
-// Generic API rate limit (separate, stricter limiter is applied to the
-// ESP32 ingest route in simulationRoutes.js).
+// Generic API rate limit (a separate, stricter limiter is applied to the
+// ESP32 ingest route in sensorRoutes.js).
 app.use(
   '/api',
   rateLimit({
@@ -62,7 +63,8 @@ app.use('/api/workers', workerRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api', simulationRoutes); // exposes /api/esp32/data and /api/simulation/*
+app.use('/api', simulationRoutes); // exposes /api/simulation/* (fake/demo data only)
+app.use('/api/sensor', sensorRoutes); // exposes POST /api/sensor/update — real ESP32 ingest
 
 // ---- Error handling ----
 app.use(notFound);

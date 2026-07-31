@@ -4,31 +4,24 @@ const { applyFillLevel } = require('../utils/binEngine');
 
 // In-memory handle for the auto-simulation interval. A single global timer
 // is fine for a demo app (one dashboard, one simulated village network).
+//
+// NOTE: Real sensor ingest used to live in this file as
+// `ingestSensorReading` (POST /api/esp32/data). It has moved to its own
+// dedicated module — src/controllers/sensorController.js, mounted at
+// POST /api/sensor/update — so the "demo/simulation" concern and the
+// "real hardware ingest" concern are cleanly separated. This file now
+// only contains the fake/demo auto-simulation used when no real ESP32 is
+// connected.
 let simulationInterval = null;
-
-// @desc    Real ESP32 ingest endpoint. A device POSTs exactly what the
-//          hardware sends: { "binId": "BIN-023", "fillLevel": 95 }.
-//          Auth is a shared device key (x-device-key header), not a user
-//          JWT, since the ESP32 can't hold a login session.
-// @route   POST /api/esp32/data
-// @access  Device (x-device-key header)
-const ingestSensorReading = asyncHandler(async (req, res) => {
-  const { binId, fillLevel } = req.body;
-
-  if (!binId || fillLevel === undefined || Number.isNaN(Number(fillLevel))) {
-    res.status(400);
-    throw new Error('Payload must include binId and a numeric fillLevel (0-100)');
-  }
-
-  const { bin, notification } = await applyFillLevel(binId, Number(fillLevel));
-  res.status(200).json({ success: true, data: bin, notification });
-});
 
 // @desc    Start server-side Auto Simulation: every tick, nudge a handful
 //          of random online bins upward, exactly like real ultrasonic
 //          sensors reporting gradually rising fill levels. Mirrors the
 //          frontend's AppContext auto-simulation but runs on the server so
 //          it keeps updating every connected dashboard via Socket.io.
+//          Turn this OFF once real ESP32 hardware is reporting, otherwise
+//          the demo simulation and the real sensor will fight over the
+//          same bins.
 // @route   POST /api/simulation/start
 // @access  Private (Admin, Officer)
 const startAutoSimulation = asyncHandler(async (req, res) => {
@@ -73,4 +66,4 @@ const getSimulationStatus = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, running: !!simulationInterval });
 });
 
-module.exports = { ingestSensorReading, startAutoSimulation, stopAutoSimulation, getSimulationStatus };
+module.exports = { startAutoSimulation, stopAutoSimulation, getSimulationStatus };
