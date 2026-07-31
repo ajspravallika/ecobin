@@ -29,19 +29,15 @@ const float BIN_HEIGHT = 24.0;
 const float FULL_DISTANCE = 3.0;
 
 const int NUM_SAMPLES = 5;
-
 // ---------------- WiFi CONFIG ----------------
-const char* WIFI_SSID     = "YOUR_WIFI_SSID";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+const char* WIFI_SSID     = "Jahnavi";
+const char* WIFI_PASSWORD = "pravallika";
 
 // ---------------- BACKEND CONFIG ----------------
-// Your Render backend URL + the dedicated sensor route.
-// Example: "https://cleanvillage-backend.onrender.com/api/sensor/update"
-const char* SERVER_URL = "https://YOUR-BACKEND.onrender.com/api/sensor/update";
+const char* SERVER_URL = "https://ecobin-lx84.onrender.com/api/sensor/update";
 
-// Must match DEVICE_API_KEY in the backend's .env exactly.
-const char* DEVICE_API_KEY = "YOUR_DEVICE_API_KEY";
-
+// Must match DEVICE_API_KEY in Render exactly.
+const char* DEVICE_API_KEY = "change_this_device_key";
 // How often to send a reading to the backend.
 const unsigned long SEND_INTERVAL_MS = 5000; // every 5 seconds
 

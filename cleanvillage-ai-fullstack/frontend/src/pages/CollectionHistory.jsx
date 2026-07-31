@@ -47,7 +47,7 @@ export default function CollectionHistory() {
               </thead>
               <tbody>
                 {filtered.map((h) => (
-                  <tr key={h.id} className="border-b border-[var(--border-soft)] last:border-0 hover:bg-[var(--bg-surface-2)]/50">
+                  <tr key={h._id} className="border-b border-[var(--border-soft)] last:border-0 hover:bg-[var(--bg-surface-2)]/50">
                     <td className="px-4 py-3 font-mono-data font-semibold">{h.binId}</td>
                     <td className="px-4 py-3">{h.location}, {h.village}</td>
                     <td className="px-4 py-3">{h.worker}</td>

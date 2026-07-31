@@ -78,7 +78,7 @@ export default function BinDetails() {
             </p>
             <FillLevelSlider
               value={bin.fillLevel}
-              onChange={(v) => applyFillLevel(bin.binId, v)}
+              onCommit={(v) => applyFillLevel(bin.binId, v)}
               disabled={bin.sensorStatus === 'Offline'}
             />
             {bin.sensorStatus === 'Offline' && (
@@ -95,7 +95,7 @@ export default function BinDetails() {
         ) : (
           <div className="space-y-2">
             {binHistory.map((h) => (
-              <div key={h.id} className="flex items-center justify-between rounded-xl border border-[var(--border-soft)] p-3 text-sm">
+              <div key={h._id} className="flex items-center justify-between rounded-xl border border-[var(--border-soft)] p-3 text-sm">
                 <span>Collected by <strong>{h.worker}</strong> at {h.fillLevelBeforeCollection}% fill</span>
                 <span className="text-xs text-[var(--text-secondary)]">{timeAgo(h.collectedAt)}</span>
               </div>

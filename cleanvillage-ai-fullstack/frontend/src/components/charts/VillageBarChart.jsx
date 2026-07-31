@@ -1,12 +1,16 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts'
-import { VILLAGES } from '../../data/villages'
 import { STATUS } from '../../utils/binHelpers'
 
+// Derives the village list straight from whatever bins actually exist in
+// the database — no hardcoded village roster. An empty `bins` array
+// (fresh Atlas database) simply renders an empty chart.
 export default function VillageBarChart({ bins }) {
-  const data = VILLAGES.map((v) => {
-    const villageBins = bins.filter((b) => b.villageId === v.id)
+  const villageNames = [...new Set(bins.map((b) => b.village))].sort()
+
+  const data = villageNames.map((name) => {
+    const villageBins = bins.filter((b) => b.village === name)
     return {
-      village: v.name,
+      village: name,
       Normal: villageBins.filter((b) => b.status === STATUS.NORMAL).length,
       'Almost Full': villageBins.filter((b) => b.status === STATUS.ALMOST_FULL).length,
       Full: villageBins.filter((b) => b.status === STATUS.FULL).length,

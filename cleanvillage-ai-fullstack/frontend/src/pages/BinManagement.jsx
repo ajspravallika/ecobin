@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiPlus, FiEdit2, FiTrash2, FiEye, FiWifiOff } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
-import { VILLAGES } from '../data/villages'
 import SearchBar from '../components/common/SearchBar'
 import Badge from '../components/common/Badge'
 import BinGauge from '../components/common/BinGauge'
@@ -13,7 +12,7 @@ import { timeAgo } from '../utils/binHelpers'
 const STATUS_FILTERS = ['All', 'Normal', 'Almost Full', 'Full', 'Offline']
 
 export default function BinManagement() {
-  const { bins, removeBin } = useApp()
+  const { bins, villages, removeBin } = useApp()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [villageFilter, setVillageFilter] = useState('All')
@@ -40,7 +39,10 @@ export default function BinManagement() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="font-display text-xl font-bold">Bin Management</h2>
-          <p className="text-sm text-[var(--text-secondary)]">{bins.length} registered bins across 5 villages</p>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {bins.length} registered bin{bins.length === 1 ? '' : 's'}
+            {villages.length > 0 ? ` across ${villages.length} village${villages.length === 1 ? '' : 's'}` : ''}
+          </p>
         </div>
         <Link
           to="/bins/add"
@@ -58,8 +60,8 @@ export default function BinManagement() {
           className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-surface)] px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500/40"
         >
           <option value="All">All Villages</option>
-          {VILLAGES.map((v) => (
-            <option key={v.id} value={v.id}>{v.name}</option>
+          {villages.map((v) => (
+            <option key={v.villageId} value={v.villageId}>{v.name}</option>
           ))}
         </select>
         <div className="flex gap-1.5 overflow-x-auto">
@@ -79,7 +81,15 @@ export default function BinManagement() {
 
       <div className="surface-card rounded-2xl overflow-hidden">
         {filtered.length === 0 ? (
-          <EmptyState icon={FiWifiOff} title="No bins match your filters" description="Try clearing search or switching the village/status filter." />
+          bins.length === 0 ? (
+            <EmptyState
+              icon={FiWifiOff}
+              title="No bins registered yet"
+              description="Add a bin above, or have your ESP32 units start reporting — bins will appear here the moment they exist in your database."
+            />
+          ) : (
+            <EmptyState icon={FiWifiOff} title="No bins match your filters" description="Try clearing search or switching the village/status filter." />
+          )
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

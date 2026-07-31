@@ -11,7 +11,7 @@ import Badge from '../components/common/Badge'
 import { timeAgo } from '../utils/binHelpers'
 
 export default function Dashboard() {
-  const { bins, notifications, stats } = useApp()
+  const { bins, villages, notifications, stats } = useApp()
   const { user } = useAuth()
 
   const criticalBins = [...bins]
@@ -25,7 +25,9 @@ export default function Dashboard() {
         <div>
           <h2 className="font-display text-xl font-bold">Welcome back, {user?.name?.split(' ')[0]}</h2>
           <p className="text-sm text-[var(--text-secondary)]">
-            Live overview across all 5 villages in Ravulapalem Mandal.
+            {villages.length > 0
+              ? `Live overview across all ${villages.length} registered village${villages.length === 1 ? '' : 's'}.`
+              : 'Live overview of your deployment.'}
           </p>
         </div>
       </div>
@@ -102,7 +104,7 @@ export default function Dashboard() {
         ) : (
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
             {notifications.slice(0, 6).map((n) => (
-              <div key={n.id} className="rounded-xl border border-[var(--border-soft)] p-3">
+              <div key={n._id} className="rounded-xl border border-[var(--border-soft)] p-3">
                 <div className="flex items-center justify-between">
                   <span className="font-mono-data text-xs font-semibold">{n.binId}</span>
                   <Badge status={n.status} />

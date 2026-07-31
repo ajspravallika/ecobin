@@ -96,7 +96,7 @@ export default function WorkerDashboard() {
                   </div>
                 ))
             : completedToday.map((h) => (
-                <div key={h.id} className="surface-card rounded-2xl p-4 flex items-center justify-between">
+                <div key={h._id} className="surface-card rounded-2xl p-4 flex items-center justify-between">
                   <div>
                     <span className="font-mono-data font-semibold text-sm">{h.binId}</span>
                     <p className="text-xs text-[var(--text-secondary)] mt-1">{h.location}, {h.village}</p>

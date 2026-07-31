@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react'
-import { WORKERS } from '../data/workers'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { authApi } from '../api/auth'
+import { getToken, setToken } from '../api/client'
 
 const AuthContext = createContext(null)
 
@@ -9,40 +10,51 @@ export const ROLES = {
   WORKER: 'Waste Collection Worker',
 }
 
-const DEMO_USERS = {
-  [ROLES.ADMIN]: { name: 'A. Chandra Sekhar', title: 'System Administrator', workerId: null },
-  [ROLES.OFFICER]: { name: 'K. Padmavathi', title: 'Municipal Sanitation Officer', workerId: null },
-  [ROLES.WORKER]: { name: WORKERS[0].name, title: 'Waste Collection Worker', workerId: WORKERS[0].id },
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('cv_user')
-    return saved ? JSON.parse(saved) : null
-  })
+  const [user, setUser] = useState(null)
+  // Starts true: we don't know if the stored token is valid until /me
+  // resolves, so routes must wait instead of bouncing to /login first.
+  const [checkingSession, setCheckingSession] = useState(true)
 
-  const login = (role, workerId) => {
-    const base = DEMO_USERS[role]
-    const resolvedWorker = role === ROLES.WORKER && workerId
-      ? WORKERS.find((w) => w.id === workerId) || WORKERS[0]
-      : null
-    const profile = {
-      role,
-      name: resolvedWorker ? resolvedWorker.name : base.name,
-      title: base.title,
-      workerId: resolvedWorker ? resolvedWorker.id : base.workerId,
+  // On load, if a token is already stored, validate it against the real
+  // backend and restore the session — never trust cached user data alone.
+  useEffect(() => {
+    const token = getToken()
+    if (!token) {
+      setCheckingSession(false)
+      return
     }
-    setUser(profile)
-    localStorage.setItem('cv_user', JSON.stringify(profile))
-  }
+    authApi
+      .me()
+      .then((res) => setUser(res.user))
+      .catch(() => setToken(null))
+      .finally(() => setCheckingSession(false))
+  }, [])
 
-  const logout = () => {
+  const login = useCallback(async (email, password) => {
+    const res = await authApi.login(email, password)
+    setToken(res.token)
+    setUser(res.user)
+    return res.user
+  }, [])
+
+  const register = useCallback(async (payload) => {
+    const res = await authApi.register(payload)
+    setToken(res.token)
+    setUser(res.user)
+    return res.user
+  }, [])
+
+  const logout = useCallback(() => {
+    authApi.logout().catch(() => {})
+    setToken(null)
     setUser(null)
-    localStorage.removeItem('cv_user')
-  }
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider
+      value={{ user, login, register, logout, isAuthenticated: !!user, checkingSession }}
+    >
       {children}
     </AuthContext.Provider>
   )

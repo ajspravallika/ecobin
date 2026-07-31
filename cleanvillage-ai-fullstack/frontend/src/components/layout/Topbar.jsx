@@ -32,7 +32,7 @@ export default function Topbar({ onMenuClick, title }) {
 
       <div className="ml-auto flex items-center gap-2">
         <button
-          onClick={() => setAutoSimulation((v) => !v)}
+          onClick={() => setAutoSimulation()}
           className={`hidden md:flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
             autoSimulation
               ? 'bg-teal-600 text-white'

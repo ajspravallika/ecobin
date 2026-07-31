@@ -1,15 +1,18 @@
 import { FiDownload } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
-import { VILLAGES } from '../data/villages'
 import { STATUS } from '../utils/binHelpers'
 import StatusPieChart from '../components/charts/StatusPieChart'
 import VillageBarChart from '../components/charts/VillageBarChart'
+import EmptyState from '../components/common/EmptyState'
+import { FiMapPin } from 'react-icons/fi'
 
 export default function Reports() {
-  const { bins, history, stats } = useApp()
+  const { bins, villages, history, stats } = useApp()
 
-  const villageSummary = VILLAGES.map((v) => {
-    const villageBins = bins.filter((b) => b.villageId === v.id)
+  // Village roster comes from the real /api/villages collection. If it's
+  // empty (fresh Atlas database), this table is simply empty too.
+  const villageSummary = villages.map((v) => {
+    const villageBins = bins.filter((b) => b.villageId === v.villageId)
     const collected = history.filter((h) => h.village === v.name).length
     const avgFill = villageBins.length
       ? Math.round(villageBins.reduce((sum, b) => sum + b.fillLevel, 0) / villageBins.length)
@@ -44,7 +47,7 @@ export default function Reports() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="font-display text-xl font-bold">Reports</h2>
-          <p className="text-sm text-[var(--text-secondary)]">Municipality-wide summary for Ravulapalem Mandal</p>
+          <p className="text-sm text-[var(--text-secondary)]">Municipality-wide summary across all registered villages</p>
         </div>
         <button
           onClick={handleExport}
@@ -69,32 +72,40 @@ export default function Reports() {
         <div className="p-4 lg:p-5 pb-0">
           <p className="font-display font-semibold text-sm">Village-wise Summary</p>
         </div>
-        <div className="overflow-x-auto mt-3">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-[var(--text-secondary)] border-b border-[var(--border-soft)]">
-                <th className="px-4 py-3 font-medium">Village</th>
-                <th className="px-4 py-3 font-medium">Total Bins</th>
-                <th className="px-4 py-3 font-medium">Full Bins</th>
-                <th className="px-4 py-3 font-medium">Offline Sensors</th>
-                <th className="px-4 py-3 font-medium">Collections Logged</th>
-                <th className="px-4 py-3 font-medium">Avg Fill %</th>
-              </tr>
-            </thead>
-            <tbody>
-              {villageSummary.map((v) => (
-                <tr key={v.name} className="border-b border-[var(--border-soft)] last:border-0">
-                  <td className="px-4 py-3 font-medium">{v.name}</td>
-                  <td className="px-4 py-3">{v.total}</td>
-                  <td className="px-4 py-3 text-[var(--color-danger)]">{v.full}</td>
-                  <td className="px-4 py-3 text-slate-400">{v.offline}</td>
-                  <td className="px-4 py-3">{v.collected}</td>
-                  <td className="px-4 py-3">{v.avgFill}%</td>
+        {villageSummary.length === 0 ? (
+          <EmptyState
+            icon={FiMapPin}
+            title="No villages registered yet"
+            description="Add villages via POST /api/villages (or your admin UI) to see them summarized here."
+          />
+        ) : (
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-[var(--text-secondary)] border-b border-[var(--border-soft)]">
+                  <th className="px-4 py-3 font-medium">Village</th>
+                  <th className="px-4 py-3 font-medium">Total Bins</th>
+                  <th className="px-4 py-3 font-medium">Full Bins</th>
+                  <th className="px-4 py-3 font-medium">Offline Sensors</th>
+                  <th className="px-4 py-3 font-medium">Collections Logged</th>
+                  <th className="px-4 py-3 font-medium">Avg Fill %</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {villageSummary.map((v) => (
+                  <tr key={v.name} className="border-b border-[var(--border-soft)] last:border-0">
+                    <td className="px-4 py-3 font-medium">{v.name}</td>
+                    <td className="px-4 py-3">{v.total}</td>
+                    <td className="px-4 py-3 text-[var(--color-danger)]">{v.full}</td>
+                    <td className="px-4 py-3 text-slate-400">{v.offline}</td>
+                    <td className="px-4 py-3">{v.collected}</td>
+                    <td className="px-4 py-3">{v.avgFill}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

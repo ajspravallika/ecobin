@@ -58,7 +58,7 @@ export default function NotificationBell() {
             ) : (
               notifications.slice(0, 8).map((n) => (
                 <button
-                  key={n.id}
+                  key={n._id}
                   onClick={() => {
                     setOpen(false)
                     navigate('/notifications')

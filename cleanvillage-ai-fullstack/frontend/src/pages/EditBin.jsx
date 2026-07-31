@@ -7,7 +7,7 @@ import { FiTrash2 } from 'react-icons/fi'
 
 export default function EditBin() {
   const { binId } = useParams()
-  const { bins, editBin } = useApp()
+  const { bins, editBin, villages, workers } = useApp()
   const navigate = useNavigate()
   const bin = bins.find((b) => b.binId === binId)
 
@@ -28,7 +28,7 @@ export default function EditBin() {
       <h2 className="font-display text-xl font-bold mb-1">Edit {bin.binId}</h2>
       <p className="text-sm text-[var(--text-secondary)] mb-5">Update location, assignment, or sensor configuration.</p>
       <div className="surface-card rounded-2xl p-5">
-        <BinForm initial={bin} onSubmit={handleSubmit} submitLabel="Save Changes" />
+        <BinForm initial={bin} villages={villages} workers={workers} onSubmit={handleSubmit} submitLabel="Save Changes" />
       </div>
     </div>
   )

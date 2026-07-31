@@ -54,10 +54,10 @@ export default function Settings() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium flex items-center gap-1.5"><FiZap size={14} /> Auto Simulation Mode</p>
-            <p className="text-xs text-[var(--text-secondary)]">Randomly fills bins over time so the dashboard looks live during a demo.</p>
+            <p className="text-xs text-[var(--text-secondary)]">Randomly nudges fill levels on your existing bins so the dashboard looks live during a demo. It never creates bins — if your database is empty, this does nothing.</p>
           </div>
           <button
-            onClick={() => setAutoSimulation((v) => !v)}
+            onClick={() => setAutoSimulation()}
             className={`rounded-full px-4 py-2 text-xs font-semibold ${autoSimulation ? 'bg-teal-600 text-white' : 'bg-[var(--bg-surface-2)] text-[var(--text-secondary)]'}`}
           >
             {autoSimulation ? 'On' : 'Off'}
@@ -89,7 +89,10 @@ export default function Settings() {
       <div className="surface-card rounded-2xl p-5">
         <p className="font-display font-semibold text-sm mb-1">About</p>
         <p className="text-xs text-[var(--text-secondary)]">CleanVillage AI v1.0.0 · Smart Waste Monitoring and Collection System</p>
-        <p className="text-xs text-[var(--text-secondary)] mt-1">Firebase mode: Simulation (no live project connected)</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">
+          Backend: {import.meta.env.VITE_API_URL || 'not configured'}
+        </p>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">Database: MongoDB Atlas (all bins, villages, workers, notifications, and history are read live — nothing is hardcoded)</p>
       </div>
     </div>
   )

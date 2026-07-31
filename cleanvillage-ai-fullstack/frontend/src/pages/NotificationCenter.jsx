@@ -53,7 +53,7 @@ export default function NotificationCenter() {
       ) : (
         <div className="space-y-2.5">
           {filtered.map((n) => (
-            <div key={n.id} className={`surface-card rounded-2xl p-4 flex items-start gap-3 ${!n.read ? 'ring-1 ring-teal-500/25' : ''}`}>
+            <div key={n._id} className={`surface-card rounded-2xl p-4 flex items-start gap-3 ${!n.read ? 'ring-1 ring-teal-500/25' : ''}`}>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono-data font-semibold text-sm">{n.binId}</span>
@@ -72,7 +72,7 @@ export default function NotificationCenter() {
                 </div>
               </div>
               <button
-                onClick={() => dismissNotification(n.id)}
+                onClick={() => dismissNotification(n._id)}
                 aria-label="Dismiss"
                 className="h-8 w-8 shrink-0 grid place-items-center rounded-full hover:bg-[var(--bg-surface-2)]"
               >

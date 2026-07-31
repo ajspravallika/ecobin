@@ -1,25 +1,43 @@
+import { useEffect, useState } from 'react'
 import { getStatusColor, getStatusFromFill } from '../../utils/binHelpers'
 
-export default function FillLevelSlider({ value, onChange, disabled = false }) {
-  const status = getStatusFromFill(value)
+// `value` is the committed value (from the server/AppContext). We track a
+// local value while dragging so the UI feels instant, but only call
+// `onCommit` — which triggers a real PATCH /api/bins/:binId/fill request —
+// once the user releases the slider, instead of on every drag tick.
+export default function FillLevelSlider({ value, onCommit, disabled = false }) {
+  const [localValue, setLocalValue] = useState(value)
+
+  useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
+  const status = getStatusFromFill(localValue)
   const color = getStatusColor(status)
+
+  const commit = () => {
+    if (localValue !== value) onCommit(localValue)
+  }
 
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-xs text-[var(--text-secondary)]">Simulated ultrasonic reading</span>
-        <span className="font-mono-data text-sm font-semibold" style={{ color: color.hex }}>{value}%</span>
+        <span className="font-mono-data text-sm font-semibold" style={{ color: color.hex }}>{localValue}%</span>
       </div>
       <input
         type="range"
         min={0}
         max={100}
-        value={value}
+        value={localValue}
         disabled={disabled}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => setLocalValue(Number(e.target.value))}
+        onMouseUp={commit}
+        onTouchEnd={commit}
+        onKeyUp={commit}
         className="w-full h-2 rounded-full appearance-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         style={{
-          background: `linear-gradient(to right, ${color.hex} ${value}%, var(--bg-surface-2) ${value}%)`,
+          background: `linear-gradient(to right, ${color.hex} ${localValue}%, var(--bg-surface-2) ${localValue}%)`,
           accentColor: color.hex,
         }}
       />

@@ -4,7 +4,7 @@ import BinForm from '../components/common/BinForm'
 import { getStatusFromFill } from '../utils/binHelpers'
 
 export default function AddBin() {
-  const { addBin, bins } = useApp()
+  const { addBin, bins, villages, workers } = useApp()
   const navigate = useNavigate()
 
   const handleSubmit = async (data) => {
@@ -27,7 +27,7 @@ export default function AddBin() {
         readings will resolve automatically to the location entered here.
       </p>
       <div className="surface-card rounded-2xl p-5">
-        <BinForm onSubmit={handleSubmit} submitLabel="Register Bin" />
+        <BinForm villages={villages} workers={workers} onSubmit={handleSubmit} submitLabel="Register Bin" />
       </div>
     </div>
   )

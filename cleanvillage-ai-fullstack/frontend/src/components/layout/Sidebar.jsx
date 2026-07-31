@@ -4,6 +4,7 @@ import {
 } from 'react-icons/fi'
 import { PiRecycleBold } from 'react-icons/pi'
 import { useAuth, ROLES } from '../../context/AuthContext'
+import { useApp } from '../../context/AppContext'
 
 const ADMIN_OFFICER_NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: FiGrid },
@@ -23,6 +24,7 @@ const WORKER_NAV = [
 
 export default function Sidebar({ open, onClose }) {
   const { user } = useAuth()
+  const { bins, villages } = useApp()
   const nav = user?.role === ROLES.WORKER ? WORKER_NAV : ADMIN_OFFICER_NAV
 
   return (
@@ -63,9 +65,13 @@ export default function Sidebar({ open, onClose }) {
 
         <div className="p-4 border-t border-[var(--border-soft)]">
           <div className="surface-card rounded-xl p-3">
-            <p className="text-xs text-[var(--text-secondary)]">Pilot deployment</p>
-            <p className="text-sm font-semibold mt-0.5">Ravulapalem Mandal</p>
-            <p className="text-[11px] text-[var(--text-secondary)] mt-1">100 sensors · 5 villages live</p>
+            <p className="text-xs text-[var(--text-secondary)]">Live deployment</p>
+            <p className="text-sm font-semibold mt-0.5">
+              {villages.length} village{villages.length === 1 ? '' : 's'}
+            </p>
+            <p className="text-[11px] text-[var(--text-secondary)] mt-1">
+              {bins.length} sensor{bins.length === 1 ? '' : 's'} registered
+            </p>
           </div>
         </div>
       </aside>

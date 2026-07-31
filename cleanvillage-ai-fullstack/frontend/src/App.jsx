@@ -17,8 +17,17 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 
+function SessionLoading() {
+  return (
+    <div className="min-h-screen grid place-items-center bg-[var(--bg-page)] text-sm text-[var(--text-secondary)]">
+      Checking your session…
+    </div>
+  )
+}
+
 function ProtectedRoute({ children, allow }) {
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, checkingSession } = useAuth()
+  if (checkingSession) return <SessionLoading />
   if (!isAuthenticated) return <Navigate to="/login" replace />
   if (allow && !allow.includes(user.role)) {
     return <Navigate to={user.role === ROLES.WORKER ? '/worker' : '/dashboard'} replace />
@@ -33,12 +42,15 @@ function RoleHome() {
 }
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, checkingSession } = useAuth()
   const staffRoles = [ROLES.ADMIN, ROLES.OFFICER]
 
   return (
     <Routes>
-      <Route path="/login" element={isAuthenticated ? <RoleHome /> : <Login />} />
+      <Route
+        path="/login"
+        element={checkingSession ? <SessionLoading /> : isAuthenticated ? <RoleHome /> : <Login />}
+      />
 
       <Route
         element={
