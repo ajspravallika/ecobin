@@ -59,4 +59,6 @@ const updateSensorReading = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { updateSensorReading };
+module.exports = {
+  updateSensorReading,
+};

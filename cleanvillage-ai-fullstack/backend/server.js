@@ -68,7 +68,7 @@ app.use('/api/sensor', sensorRoutes); // exposes POST /api/sensor/update — rea
 
 // ---- Error handling ----
 app.use(notFound);
-app.use(errorHandler);
+app.use(errorHandler);what 
 
 // ---- Socket.io (real-time bin/notification/stats push) ----
 initSocket(server, CLIENT_URL);

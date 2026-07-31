@@ -66,4 +66,8 @@ const getSimulationStatus = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, running: !!simulationInterval });
 });
 
-module.exports = { startAutoSimulation, stopAutoSimulation, getSimulationStatus };
+module.exports = {
+  startAutoSimulation,
+  stopAutoSimulation,
+  getSimulationStatus,
+};
