@@ -153,6 +153,12 @@ export function AppProvider({ children }) {
     setNotifications((prev) => prev.filter((n) => n.binId !== binId))
   }, [])
 
+  const addVillage = useCallback(async (village) => {
+    const res = await villagesApi.create(village)
+    setVillages((prev) => [...prev, res.data])
+    return res.data
+  }, [])
+
   const dismissNotification = useCallback(async (id) => {
     await notificationsApi.dismiss(id)
     setNotifications((prev) => prev.filter((n) => n.id !== id && n._id !== id))
@@ -198,6 +204,7 @@ export function AppProvider({ children }) {
     markCollected,
     addBin,
     editBin,
+    addVillage,
     removeBin,
     dismissNotification,
     markAllNotificationsRead,

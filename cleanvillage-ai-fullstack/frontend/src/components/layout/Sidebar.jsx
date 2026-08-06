@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import {
-  FiGrid, FiTrash2, FiPlusCircle, FiBell, FiUsers, FiClock, FiBarChart2, FiSettings,
+  FiGrid, FiTrash2, FiPlusCircle, FiBell, FiUsers, FiClock, FiBarChart2, FiSettings, FiMapPin,
 } from 'react-icons/fi'
 import { PiRecycleBold } from 'react-icons/pi'
 import { useAuth, ROLES } from '../../context/AuthContext'
@@ -10,6 +10,7 @@ const ADMIN_OFFICER_NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: FiGrid },
   { to: '/bins', label: 'Bin Management', icon: FiTrash2 },
   { to: '/bins/add', label: 'Add Bin', icon: FiPlusCircle },
+  { to: '/villages/add', label: 'Add Village', icon: FiMapPin },
   { to: '/notifications', label: 'Notification Center', icon: FiBell },
   { to: '/history', label: 'Collection History', icon: FiClock },
   { to: '/reports', label: 'Reports', icon: FiBarChart2 },

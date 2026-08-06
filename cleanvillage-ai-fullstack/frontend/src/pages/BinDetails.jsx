@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { FiArrowLeft, FiEdit2, FiTrash2, FiMapPin, FiUser, FiWifi } from 'react-icons/fi'
+import { FiArrowLeft, FiEdit2, FiTrash2, FiMapPin, FiUser, FiWifi, FiCpu, FiCopy, FiCheck } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
 import BinGauge from '../components/common/BinGauge'
 import Badge from '../components/common/Badge'
@@ -12,9 +13,22 @@ export default function BinDetails() {
   const { bins, applyFillLevel, markCollected, history } = useApp()
   const bin = bins.find((b) => b.binId === binId)
   const binHistory = history.filter((h) => h.binId === binId)
+  const [copied, setCopied] = useState(false)
 
   if (!bin) {
     return <EmptyState icon={FiTrash2} title="Bin not found" description={`No bin with ID ${binId} exists in the registry.`} />
+  }
+
+  const firmwareSnippet = `const String BIN_ID = "${bin.binId}";
+const float BIN_HEIGHT = ${bin.binHeightCm ?? 100};   // cm, empty-bin distance
+const float FULL_DISTANCE = 3.0;    // cm, distance sensor reads when full
+const char* SERVER_URL = "<your Render backend URL>/api/sensor/update";
+const char* DEVICE_API_KEY = "<must match backend DEVICE_API_KEY>";`
+
+  const copySnippet = () => {
+    navigator.clipboard.writeText(firmwareSnippet)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
   }
 
   const infoRows = [
@@ -85,6 +99,30 @@ export default function BinDetails() {
               <p className="text-xs text-[var(--color-danger)] mt-2">This sensor is marked offline. Edit the bin to bring it back online.</p>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="surface-card rounded-2xl p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <FiCpu size={15} className="text-[var(--text-secondary)]" />
+          <p className="font-display font-semibold text-sm">ESP32 Firmware Setup for {bin.binId}</p>
+        </div>
+        <p className="text-xs text-[var(--text-secondary)] mb-3">
+          This is a database record only — it hasn't provisioned any physical hardware. To connect a
+          real sensor to this bin: open your ESP32 sketch, replace the constants below with these values,
+          fill in your WiFi credentials, then flash this exact sketch onto the ESP32 that will sit at this
+          bin. Every physical bin needs its own ESP32 flashed with its own Bin ID this way.
+        </p>
+        <div className="relative">
+          <pre className="rounded-xl bg-[var(--bg-surface-2)] border border-[var(--border-soft)] p-3.5 text-xs font-mono-data overflow-x-auto whitespace-pre">
+{firmwareSnippet}
+          </pre>
+          <button
+            onClick={copySnippet}
+            className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-soft)] bg-[var(--bg-surface)] px-2.5 py-1 text-[11px] font-medium hover:bg-[var(--bg-surface-2)]"
+          >
+            {copied ? <><FiCheck size={12} /> Copied</> : <><FiCopy size={12} /> Copy</>}
+          </button>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { FiAlertTriangle } from 'react-icons/fi'
 
 // `villages` and `workers` are passed in from AppContext (real /api/villages
@@ -69,9 +70,8 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
         <div>
           <p className="font-semibold">No villages registered yet</p>
           <p className="mt-1 text-[var(--text-secondary)]">
-            Add at least one village to your database before registering bins — e.g.{' '}
-            <code className="font-mono-data">POST /api/villages</code> with{' '}
-            <code className="font-mono-data">{'{ villageId, name, ward, mandal }'}</code>.
+            Add at least one village before registering bins.{' '}
+            <Link to="/villages/add" className="underline font-medium">Add a village →</Link>
           </p>
         </div>
       </div>
