@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const { ROLES } = require('../config/constants');
+const { syncWorkerProfile } = require('../utils/workerSync');
 
 const cookieOptions = () => ({
   httpOnly: true,
@@ -37,6 +38,13 @@ const register = asyncHandler(async (req, res) => {
     phone,
     workerId: role === ROLES.WORKER ? workerId || null : null,
   });
+
+  // Every worker login account gets a matching Worker profile the moment
+  // it's created, so it shows up in the Assign Worker dropdown immediately
+  // — no separate manual step needed.
+  if (user.role === ROLES.WORKER) {
+    await syncWorkerProfile(user);
+  }
 
   const token = generateToken(user._id);
   res.cookie('token', token, cookieOptions());

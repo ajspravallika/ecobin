@@ -8,9 +8,13 @@ const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 
+const path = require('path');
+const fs = require('fs');
+
 const connectDB = require('./src/config/db');
 const { notFound, errorHandler } = require('./src/middleware/errorHandler');
 const { initSocket } = require('./src/socket');
+const { syncWorkersFromUsers } = require('./src/utils/workerSync');
 
 const authRoutes = require('./src/routes/authRoutes');
 const binRoutes = require('./src/routes/binRoutes');
@@ -66,6 +70,26 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api', simulationRoutes); // exposes /api/simulation/* (fake/demo data only)
 app.use('/api/sensor', sensorRoutes); // exposes POST /api/sensor/update — real ESP32 ingest
 
+// ---- Serve the React build (only relevant if this backend is ALSO used to
+// host the frontend, e.g. a single-service Render deploy instead of a
+// separate Static Site). If frontend/dist doesn't exist (the normal case
+// when frontend is deployed separately with VITE_API_URL pointing here),
+// this block is a silent no-op and every request falls through to the
+// normal /api routes + notFound handler below untouched.
+//
+// This is what actually fixes "refresh on /dashboard, /bins, etc. shows
+// 404" for a same-service deploy: any GET that isn't /api/* is handed
+// index.html so React Router can take over and resolve the route
+// client-side, instead of Express (or Render) returning a bare 404 for a
+// path it has no route for.
+const frontendDist = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
+
 // ---- Error handling ----
 app.use(notFound);
 app.use(errorHandler);
@@ -75,7 +99,12 @@ initSocket(server, CLIENT_URL);
 
 const PORT = process.env.PORT || 5000;
 
-connectDB().then(() => {
+connectDB().then(async () => {
+  // One-time backfill so pre-existing worker accounts (created before this
+  // fix) immediately show up in the Assign Worker dropdown — see
+  // src/utils/workerSync.js for the full explanation.
+  await syncWorkersFromUsers();
+
   server.listen(PORT, () => {
     console.log(`CleanVillage AI backend running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
   });

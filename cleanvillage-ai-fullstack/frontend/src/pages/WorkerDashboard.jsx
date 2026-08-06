@@ -80,7 +80,7 @@ export default function WorkerDashboard() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-mono-data font-semibold text-sm">{bin.binId}</span>
-                        <Badge status={bin.status} />
+                        <Badge status={bin.status} fillLevel={bin.fillLevel} offline={bin.sensorStatus === 'Offline'} />
                       </div>
                       <p className="text-xs text-[var(--text-secondary)] mt-1 flex items-center gap-1">
                         <FiMapPin size={11} /> {bin.landmark}, {bin.village}

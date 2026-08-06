@@ -67,7 +67,7 @@ export default function NotificationBell() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono-data text-xs font-semibold">{n.binId}</span>
-                    <Badge status={n.status} />
+                    <Badge status={n.status} fillLevel={n.fillLevel} />
                   </div>
                   <p className="text-xs text-[var(--text-secondary)] mt-1">{n.location}, {n.village}</p>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">{timeAgo(n.createdAt)}</p>

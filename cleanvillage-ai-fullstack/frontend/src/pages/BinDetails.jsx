@@ -42,7 +42,7 @@ export default function BinDetails() {
           <p className="font-mono-data text-lg font-bold">{bin.binId}</p>
           <p className="text-xs text-[var(--text-secondary)] mb-3">{bin.binType} · {bin.capacityLiters}L</p>
           <BinGauge fillLevel={bin.fillLevel} status={bin.status} size="lg" offline={bin.sensorStatus === 'Offline'} />
-          <div className="mt-3"><Badge status={bin.status} /></div>
+          <div className="mt-3"><Badge status={bin.status} fillLevel={bin.fillLevel} offline={bin.sensorStatus === 'Offline'} /></div>
           <p className="text-xs text-[var(--text-secondary)] mt-2">Updated {timeAgo(bin.lastUpdated)}</p>
           <p className="text-xs text-[var(--text-secondary)]">Priority: {priorityFromFill(bin.fillLevel)}</p>
 

@@ -12,9 +12,15 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
     villageId: initial?.villageId || firstVillage?.villageId || '',
     ward: initial?.ward || firstVillage?.ward || '',
     landmark: initial?.landmark || '',
+    address: initial?.address || '',
+    latitude: initial?.latitude ?? '',
+    longitude: initial?.longitude ?? '',
     assignedWorkerId: initial?.assignedWorkerId || '',
     binType: initial?.binType || 'Household Cluster Bin',
     capacityLiters: initial?.capacityLiters || 120,
+    binHeightCm: initial?.binHeightCm || 100,
+    sensorEnabled: initial?.sensorEnabled ?? true,
+    isActive: initial?.isActive ?? true,
     sensorStatus: initial?.sensorStatus || 'Online',
   }))
 
@@ -34,6 +40,8 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
     })
   }
 
+  const toggle = (key) => () => setForm((f) => ({ ...f, [key]: !f[key] }))
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const village = villages.find((v) => v.villageId === form.villageId)
@@ -45,6 +53,9 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
       assignedWorkerId: form.assignedWorkerId || null,
       assignedWorkerName: worker?.name || null,
       capacityLiters: Number(form.capacityLiters),
+      binHeightCm: Number(form.binHeightCm),
+      latitude: form.latitude === '' ? null : Number(form.latitude),
+      longitude: form.longitude === '' ? null : Number(form.longitude),
     })
   }
 
@@ -106,6 +117,27 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
         </div>
       </div>
 
+      <div>
+        <label className={labelClass}>Full Address (optional)</label>
+        <input
+          value={form.address}
+          onChange={set('address')}
+          placeholder="12-34, Main Road, Kothapeta"
+          className={inputClass}
+        />
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Latitude (optional)</label>
+          <input type="number" step="any" value={form.latitude} onChange={set('latitude')} placeholder="16.9891" className={`${inputClass} font-mono-data`} />
+        </div>
+        <div>
+          <label className={labelClass}>Longitude (optional)</label>
+          <input type="number" step="any" value={form.longitude} onChange={set('longitude')} placeholder="81.9591" className={`${inputClass} font-mono-data`} />
+        </div>
+      </div>
+
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Assigned Worker</label>
@@ -140,6 +172,21 @@ export default function BinForm({ initial, villages, workers, onSubmit, submitLa
           <label className={labelClass}>Capacity (liters)</label>
           <input type="number" min={20} required value={form.capacityLiters} onChange={set('capacityLiters')} className={inputClass} />
         </div>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-4">
+        <div>
+          <label className={labelClass}>Bin Height (cm)</label>
+          <input type="number" min={10} value={form.binHeightCm} onChange={set('binHeightCm')} className={inputClass} />
+        </div>
+        <label className="flex items-center gap-2 mt-1.5 sm:mt-6 text-sm">
+          <input type="checkbox" checked={form.sensorEnabled} onChange={toggle('sensorEnabled')} className="h-4 w-4 rounded border-[var(--border-soft)]" />
+          <span className={labelClass}>Sensor Enabled</span>
+        </label>
+        <label className="flex items-center gap-2 mt-1.5 sm:mt-6 text-sm">
+          <input type="checkbox" checked={form.isActive} onChange={toggle('isActive')} className="h-4 w-4 rounded border-[var(--border-soft)]" />
+          <span className={labelClass}>Active</span>
+        </label>
       </div>
 
       <button

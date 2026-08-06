@@ -85,7 +85,7 @@ export default function Dashboard() {
                   <p className="font-mono-data text-xs font-semibold">{bin.binId}</p>
                   <p className="text-[11px] text-[var(--text-secondary)] truncate">{bin.landmark}, {bin.village}</p>
                 </div>
-                <Badge status={bin.status} />
+                <Badge status={bin.status} fillLevel={bin.fillLevel} offline={bin.sensorStatus === 'Offline'} />
               </Link>
             ))}
           </div>
@@ -107,7 +107,7 @@ export default function Dashboard() {
               <div key={n._id} className="rounded-xl border border-[var(--border-soft)] p-3">
                 <div className="flex items-center justify-between">
                   <span className="font-mono-data text-xs font-semibold">{n.binId}</span>
-                  <Badge status={n.status} />
+                  <Badge status={n.status} fillLevel={n.fillLevel} />
                 </div>
                 <p className="text-xs text-[var(--text-secondary)] mt-1.5">{n.location}, {n.village}</p>
                 <p className="text-[11px] text-[var(--text-secondary)] mt-1">{timeAgo(n.createdAt)} · Priority: {n.priority}</p>

@@ -13,6 +13,9 @@ const binSchema = new mongoose.Schema(
     mandal: { type: String, required: true, trim: true },
     ward: { type: String, required: true, trim: true },
     landmark: { type: String, required: true, trim: true },
+    address: { type: String, trim: true, default: '' }, // full postal address (optional)
+    latitude: { type: Number, default: null },
+    longitude: { type: Number, default: null },
 
     assignedWorkerId: { type: String, default: null }, // WRK-01
     assignedWorkerName: { type: String, default: null },
@@ -36,6 +39,9 @@ const binSchema = new mongoose.Schema(
       default: 'Household Cluster Bin',
     },
     capacityLiters: { type: Number, default: 120 },
+    binHeightCm: { type: Number, default: 100 }, // physical bin height — what the ESP32's HC-SR04 distance reading is measured against
+    sensorEnabled: { type: Boolean, default: true }, // false = manually-tracked bin, no ESP32 installed yet
+    isActive: { type: Boolean, default: true }, // false = decommissioned, hidden from active dashboards but kept for history
   },
   { timestamps: true }
 );

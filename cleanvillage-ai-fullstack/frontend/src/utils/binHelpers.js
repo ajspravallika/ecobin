@@ -27,6 +27,19 @@ export function getStatusColor(status) {
   }
 }
 
+// The only text that should ever be shown to a user for a bin's fill
+// state: EMPTY at 0%, FULL at >=90%, otherwise the exact percentage.
+// Never "Normal" / "Almost Full" / "Partial" / "Half" — those are internal
+// bucket names (STATUS above) used for filtering, stats, and notification
+// thresholds, not for display.
+export function getDisplayStatus(fillLevel, offline = false) {
+  if (offline) return 'OFFLINE'
+  const fill = Math.max(0, Math.min(100, Math.round(fillLevel ?? 0)))
+  if (fill === 0) return 'EMPTY'
+  if (fill >= 90) return 'FULL'
+  return `${fill}%`
+}
+
 export function priorityFromFill(fillLevel) {
   if (fillLevel >= 90) return 'High'
   if (fillLevel >= 71) return 'Medium'

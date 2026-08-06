@@ -4,7 +4,7 @@ import { FiBell, FiX, FiCheck } from 'react-icons/fi'
 import { useApp } from '../context/AppContext'
 import Badge from '../components/common/Badge'
 import EmptyState from '../components/common/EmptyState'
-import { timeAgo } from '../utils/binHelpers'
+import { timeAgo, getDisplayStatus } from '../utils/binHelpers'
 
 const FILTERS = ['All', 'Full', 'Almost Full']
 
@@ -57,11 +57,11 @@ export default function NotificationCenter() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono-data font-semibold text-sm">{n.binId}</span>
-                  <Badge status={n.status} />
+                  <Badge status={n.status} fillLevel={n.fillLevel} />
                   <span className="text-[11px] text-[var(--text-secondary)]">Priority: {n.priority}</span>
                 </div>
                 <p className="text-sm mt-1.5">
-                  {n.status === 'Full' ? '🔴' : '🟡'} {n.binId} is {n.status === 'Full' ? 'FULL' : 'ALMOST FULL'} at {n.fillLevel}%
+                  {n.status === 'Full' ? '🔴' : '🟡'} {n.binId} is {getDisplayStatus(n.fillLevel)}
                 </p>
                 <p className="text-xs text-[var(--text-secondary)] mt-1">{n.location}, {n.village} · {n.ward}</p>
                 <div className="flex items-center gap-3 mt-2">

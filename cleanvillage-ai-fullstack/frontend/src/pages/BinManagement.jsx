@@ -123,7 +123,7 @@ export default function BinManagement() {
                         {bin.sensorStatus}
                       </span>
                     </td>
-                    <td className="px-4 py-3"><Badge status={bin.status} /></td>
+                    <td className="px-4 py-3"><Badge status={bin.status} fillLevel={bin.fillLevel} offline={bin.sensorStatus === 'Offline'} /></td>
                     <td className="px-4 py-3 text-xs text-[var(--text-secondary)]">{timeAgo(bin.lastUpdated)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
