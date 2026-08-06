@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import BinManagement from './pages/BinManagement'
 import AddBin from './pages/AddBin'
+import VillageManagement from './pages/VillageManagement'
 import AddVillage from './pages/AddVillage'
 import EditBin from './pages/EditBin'
 import BinDetails from './pages/BinDetails'
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<ProtectedRoute allow={staffRoles}><Dashboard /></ProtectedRoute>} />
         <Route path="/bins" element={<ProtectedRoute allow={staffRoles}><BinManagement /></ProtectedRoute>} />
         <Route path="/bins/add" element={<ProtectedRoute allow={staffRoles}><AddBin /></ProtectedRoute>} />
+        <Route path="/villages" element={<ProtectedRoute allow={staffRoles}><VillageManagement /></ProtectedRoute>} />
         <Route path="/villages/add" element={<ProtectedRoute allow={staffRoles}><AddVillage /></ProtectedRoute>} />
         <Route path="/bins/:binId" element={<BinDetails />} />
         <Route path="/bins/:binId/edit" element={<ProtectedRoute allow={staffRoles}><EditBin /></ProtectedRoute>} />

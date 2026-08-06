@@ -11,18 +11,15 @@ export default function AddVillage() {
   const [form, setForm] = useState(emptyForm)
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
-
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
-
     if (!form.villageId.trim() || !form.name.trim() || !form.ward.trim() || !form.mandal.trim()) {
       setError('All fields are required — Village ID, Name, Ward and Mandal.')
       return
     }
-
     setSubmitting(true)
     try {
       // villageId is lowercased/trimmed by the backend schema automatically —
@@ -58,7 +55,6 @@ export default function AddVillage() {
           <span>{error}</span>
         </div>
       )}
-
       <form onSubmit={handleSubmit} className="surface-card rounded-2xl p-5 space-y-4">
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
